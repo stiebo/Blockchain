@@ -1,5 +1,7 @@
 package blockchain.domain;
 
+import blockchain.config.Config;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,9 +17,9 @@ public class Blockchain {
 
     public Blockchain() {
         blockchain = new ArrayList<>();
-        N = 3;
-        tTarget_sec = 2;
-        maxMessagesPerBlock = 10;
+        N = Config.INITIAL_LEADING_ZEROS;
+        tTarget_sec = Config.BLOCK_TARGET_CREATION_SECONDS;
+        maxMessagesPerBlock = Config.MAX_MESSAGES_PER_BLOCK;
         activeMessages = new ArrayList<>();
         nextMessages = new ArrayList<>();
         nextMsgId = 1;

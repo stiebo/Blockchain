@@ -1,5 +1,6 @@
 package blockchain.miner;
 
+import blockchain.config.Config;
 import blockchain.domain.Block;
 import blockchain.domain.Blockchain;
 
@@ -12,20 +13,19 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class Coordinator {
-    private Blockchain blockchain;
-    private ExecutorService executor;
+    private final Blockchain blockchain;
     private final int maxMiners;
 
     public Coordinator(Blockchain blockchain) {
         this.blockchain = blockchain;
-        this.maxMiners = Runtime.getRuntime().availableProcessors() - 4;
+        this.maxMiners = Config.MAX_MINERS;
     }
 
     public void run() {
-        while (blockchain.getSize() < 15) {
-            executor = Executors.newFixedThreadPool(maxMiners);
+        while (blockchain.getSize() < Config.BLOCKCHAIN_SIZE) {
+            ExecutorService executor = Executors.newFixedThreadPool(maxMiners);
             ArrayList<Miner> miners = IntStream.range(0, maxMiners)
-                    .mapToObj(i -> new Miner(blockchain, "miner" + Integer.toString(i+1)))
+                    .mapToObj(i -> new Miner(blockchain, "miner" + (i + 1)))
                     .collect(Collectors.toCollection(ArrayList::new));
             Block newBlock = null;
             try {
