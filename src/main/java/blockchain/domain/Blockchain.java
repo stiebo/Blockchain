@@ -1,12 +1,13 @@
 package blockchain.domain;
 
 import blockchain.config.Config;
+import blockchain.security.SHA256Hash;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Blockchain {
-    private final ArrayList<Block> blockchain;
+    private final List<Block> blockchain;
     private int N;
     private final int tTarget_sec;
     private final int maxMessagesPerBlock;
@@ -36,6 +37,9 @@ public class Blockchain {
             System.out.printf("Block was generating for %d seconds%n", block.getTimeToMine() / 1000);
             adjustN(block.getTimeToMine());
         }
+        else {
+            System.out.println("Invalid block will not be added!");
+        }
     }
 
     private boolean isValidBlock(Block block) {
@@ -52,7 +56,7 @@ public class Blockchain {
                 return false;
         }
         if (block.getData().stream().allMatch(Message::verifySignature)) {
-            return block.applySha256().equals(block.getHash());
+            return SHA256Hash.applySha256(block.toHashInputExclMagic()+block.getMagic()).equals(block.getHash());
 
         }
         return false;

@@ -5,7 +5,7 @@ import java.util.List;
 public class Config {
     private Config() {}
 
-    public static int BLOCK_TARGET_CREATION_SECONDS = 5;
+    public static int BLOCK_TARGET_CREATION_SECONDS = 3;
     public static int INITIAL_LEADING_ZEROS = 0;
     public static int MAX_MESSAGES_PER_BLOCK = 20;
 

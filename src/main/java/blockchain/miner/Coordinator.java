@@ -5,6 +5,8 @@ import blockchain.domain.Block;
 import blockchain.domain.Blockchain;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -15,17 +17,19 @@ import java.util.stream.IntStream;
 public class Coordinator {
     private final Blockchain blockchain;
     private final int maxMiners;
+    private final Random sharedRandom;
 
     public Coordinator(Blockchain blockchain) {
         this.blockchain = blockchain;
         this.maxMiners = Config.MAX_MINERS;
+        this.sharedRandom = new Random();
     }
 
     public void run() {
         while (blockchain.getSize() < Config.BLOCKCHAIN_SIZE) {
             ExecutorService executor = Executors.newFixedThreadPool(maxMiners);
-            ArrayList<Miner> miners = IntStream.range(0, maxMiners)
-                    .mapToObj(i -> new Miner(blockchain, "miner" + (i + 1)))
+            List<Miner> miners = IntStream.range(0, maxMiners)
+                    .mapToObj(i -> new Miner(blockchain, "miner" + (i + 1), sharedRandom))
                     .collect(Collectors.toCollection(ArrayList::new));
             Block newBlock = null;
             try {
