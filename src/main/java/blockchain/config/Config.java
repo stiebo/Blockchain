@@ -9,7 +9,7 @@ public class Config {
     public static int INITIAL_LEADING_ZEROS = 0;
     public static int MAX_MESSAGES_PER_BLOCK = 20;
 
-    public static int MIN_MSG_INTERVAL_MILLISECONDS = 0;
+    public static int MIN_MSG_INTERVAL_MILLISECONDS = 10;
     public static int MAX_MSG_INTERVAL_MILLISECONDS = 1000;
 
     public static List<String> MESSAGE_BOTS = List.of("Bob", "Alice", "ShoesShop", "FastFood");
