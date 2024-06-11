@@ -7,7 +7,6 @@ import blockchain.security.SHA256Hash;
 import blockchain.trader.Trader;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Random;
 import java.util.concurrent.Callable;
 
