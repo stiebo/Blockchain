@@ -26,7 +26,7 @@ public class Coordinator {
     }
 
     public void run() {
-        while (blockchain.getSize() < Config.BLOCKCHAIN_SIZE) {
+        while (blockchain.size() < Config.BLOCKCHAIN_SIZE) {
             ExecutorService executor = Executors.newFixedThreadPool(maxMiners);
             List<Miner> miners = IntStream.range(0, maxMiners)
                     .mapToObj(i -> new Miner(blockchain, "miner" + (i + 1), sharedRandom))

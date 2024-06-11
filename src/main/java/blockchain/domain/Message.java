@@ -64,7 +64,6 @@ public class Message {
         return true;
     }
 
-
     public PublicKey getPublicKey() {
         return publicKey;
     }
