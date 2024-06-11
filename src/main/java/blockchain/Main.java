@@ -12,5 +12,6 @@ public class Main {
         msgBotExecutor.activate();
         coordinator.run();
         msgBotExecutor.stop();
+        System.out.println("Good bye!");
     }
 }
