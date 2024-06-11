@@ -14,11 +14,13 @@ import java.util.concurrent.ThreadLocalRandom;
 public class Miner extends Trader implements Callable<Block> {
     private final ArrayList<Block> currBlockchain;
     private final int N;
+    private final Random random;
 
     public Miner (Blockchain blockchain, String name) {
         super(blockchain, name);
         this.currBlockchain = blockchain.getBlockchain();
         this.N = blockchain.getN();
+        this.random = new Random();
     }
 
     @Override
@@ -36,7 +38,7 @@ public class Miner extends Trader implements Callable<Block> {
         String prefixString = "0".repeat(N);
         while (!(newBlock.getHash().substring(0, N).equals(prefixString)) &&
                 !Thread.interrupted())  {
-            newBlock.setMagic(ThreadLocalRandom.current().nextInt(Integer.MAX_VALUE));
+            newBlock.setMagic(random.nextInt(Integer.MAX_VALUE));
             newBlock.setHash(newBlock.applySha256());
         }
         newBlock.setTimeToMine(System.currentTimeMillis() - startTime);
