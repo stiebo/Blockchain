@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class Miner extends Trader implements Callable<Block> {
     private final ArrayList<Block> currBlockchain;
