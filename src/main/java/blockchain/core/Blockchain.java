@@ -1,4 +1,4 @@
-package blockchain.domain;
+package blockchain.core;
 
 import blockchain.config.Config;
 import blockchain.security.SHA256Hash;

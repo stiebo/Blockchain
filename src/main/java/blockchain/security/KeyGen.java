@@ -1,10 +1,12 @@
-package blockchain.trader;
+package blockchain.security;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 
 public class KeyGen {
+    private KeyGen() { }
+
     public static KeyPair generateKeyPair(int keyLength) {
         KeyPairGenerator keyGen;
         try {

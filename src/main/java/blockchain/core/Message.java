@@ -1,4 +1,4 @@
-package blockchain.domain;
+package blockchain.core;
 
 import java.security.*;
 

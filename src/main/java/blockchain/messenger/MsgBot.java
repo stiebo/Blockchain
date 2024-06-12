@@ -1,7 +1,7 @@
 package blockchain.messenger;
 
 import blockchain.config.Config;
-import blockchain.domain.Blockchain;
+import blockchain.core.Blockchain;
 import blockchain.trader.Trader;
 
 import java.util.concurrent.ThreadLocalRandom;

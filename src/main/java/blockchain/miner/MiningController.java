@@ -1,8 +1,8 @@
 package blockchain.miner;
 
 import blockchain.config.Config;
-import blockchain.domain.Block;
-import blockchain.domain.Blockchain;
+import blockchain.core.Block;
+import blockchain.core.Blockchain;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,12 +14,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class Coordinator {
+public class MiningController {
     private final Blockchain blockchain;
     private final int maxMiners;
     private final Random sharedRandom;
 
-    public Coordinator(Blockchain blockchain) {
+    public MiningController(Blockchain blockchain) {
         this.blockchain = blockchain;
         this.maxMiners = Config.MAX_MINERS;
         this.sharedRandom = new Random();

@@ -1,8 +1,8 @@
 package blockchain.miner;
 
 import blockchain.config.Config;
-import blockchain.domain.Block;
-import blockchain.domain.Blockchain;
+import blockchain.core.Block;
+import blockchain.core.Blockchain;
 import blockchain.security.SHA256Hash;
 import blockchain.trader.Trader;
 

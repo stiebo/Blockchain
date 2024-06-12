@@ -1,8 +1,8 @@
 package blockchain.trader;
 
-import blockchain.domain.Blockchain;
-import blockchain.domain.Message;
-import blockchain.nodes.Nodes;
+import blockchain.core.Blockchain;
+import blockchain.core.Message;
+import blockchain.security.KeyGen;
 
 import java.security.KeyPair;
 import java.util.List;
