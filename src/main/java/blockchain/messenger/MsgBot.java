@@ -1,13 +1,14 @@
 package blockchain.messenger;
 
-import blockchain.domain.Blockchain;
+import blockchain.config.Config;
+import blockchain.core.Blockchain;
 import blockchain.trader.Trader;
 
 import java.util.concurrent.ThreadLocalRandom;
 
 public class MsgBot extends Trader implements Runnable {
-    private final int minMsgIntervall_ms = 500;
-    private final int maxMsgIntervall_ms = 1000;
+    private final int minMsgInterval_ms = Config.MIN_MSG_INTERVAL_MILLISECONDS;
+    private final int maxMsgInterval_ms = Config.MAX_MSG_INTERVAL_MILLISECONDS;
 
     public MsgBot(Blockchain blockchain, String name) {
         super(blockchain, name);
@@ -19,7 +20,7 @@ public class MsgBot extends Trader implements Runnable {
             try {
                 donateVCs();
                 Thread.sleep(ThreadLocalRandom.current().nextInt(
-                        maxMsgIntervall_ms - minMsgIntervall_ms) + minMsgIntervall_ms);
+                        maxMsgInterval_ms - minMsgInterval_ms) + minMsgInterval_ms);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }

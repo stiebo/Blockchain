@@ -1,4 +1,4 @@
-package blockchain.domain;
+package blockchain.core;
 
 import java.security.*;
 
@@ -63,7 +63,6 @@ public class Message {
         }
         return true;
     }
-
 
     public PublicKey getPublicKey() {
         return publicKey;

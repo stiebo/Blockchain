@@ -1,45 +1,46 @@
 package blockchain.miner;
 
-import blockchain.domain.Block;
-import blockchain.domain.Blockchain;
+import blockchain.config.Config;
+import blockchain.core.Block;
+import blockchain.core.Blockchain;
+import blockchain.security.SHA256Hash;
 import blockchain.trader.Trader;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class Miner extends Trader implements Callable<Block> {
-    private final ArrayList<Block> currBlockchain;
-    private final int N;
-    private final Random random;
+    private final String prefixString;
+    private final Random sharedRandom;
+    private final Block newBlock;
 
-    public Miner (Blockchain blockchain, String name) {
+    public Miner (Blockchain blockchain, String name, Random sharedRandom) {
         super(blockchain, name);
-        this.currBlockchain = blockchain.getBlockchain();
-        this.N = blockchain.getN();
-        this.random = new Random();
+        this.prefixString = "0".repeat(blockchain.getN());
+        this.sharedRandom = sharedRandom;
+
+        newBlock = new Block(
+                blockchain.isEmpty() ? 1 : blockchain.getLast().getId()+1,
+                new Date().getTime(),
+                blockchain.isEmpty() ? "0" : blockchain.getLast().getHash(),
+                blockchain.getData(),
+                name,
+                Config.MINING_SUCCESS_AWARD
+        );
     }
 
     @Override
     public Block call() {
-        Block newBlock = new Block(
-                currBlockchain.isEmpty() ? 1 : currBlockchain.get(currBlockchain.size() - 1).getId()+1,
-                new Date().getTime(),
-                currBlockchain.isEmpty() ? "0" : currBlockchain.get(currBlockchain.size() - 1).getHash(),
-                blockchain.getData(),
-                this.name,
-                100
-        );
         donateVCs();
         long startTime = System.currentTimeMillis();
-        String prefixString = "0".repeat(N);
-        while (!(newBlock.getHash().substring(0, N).equals(prefixString)) &&
-                !Thread.interrupted())  {
-            newBlock.setMagic(ThreadLocalRandom.current().nextInt(Integer.MAX_VALUE));
-            newBlock.setHash(newBlock.applySha256());
-        }
+        String hash;
+        String input = newBlock.toHashInputExclMagic();
+        do  {
+            newBlock.setMagic(sharedRandom.nextInt(Integer.MAX_VALUE));
+            hash = SHA256Hash.applySha256(input + newBlock.getMagic());
+        } while (!(hash.startsWith(prefixString)) && !Thread.interrupted());
+        newBlock.setHash(hash);
         newBlock.setTimeToMine(System.currentTimeMillis() - startTime);
         return newBlock;
     }

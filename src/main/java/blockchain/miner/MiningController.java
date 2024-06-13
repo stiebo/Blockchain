@@ -1,9 +1,12 @@
 package blockchain.miner;
 
-import blockchain.domain.Block;
-import blockchain.domain.Blockchain;
+import blockchain.config.Config;
+import blockchain.core.Block;
+import blockchain.core.Blockchain;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -11,21 +14,22 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class Coordinator {
-    private Blockchain blockchain;
-    private ExecutorService executor;
+public class MiningController {
+    private final Blockchain blockchain;
     private final int maxMiners;
+    private final Random sharedRandom;
 
-    public Coordinator(Blockchain blockchain) {
+    public MiningController(Blockchain blockchain) {
         this.blockchain = blockchain;
-        this.maxMiners = Runtime.getRuntime().availableProcessors() - 4;
+        this.maxMiners = Config.MAX_MINERS;
+        this.sharedRandom = new Random();
     }
 
     public void run() {
-        while (blockchain.getSize() < 15) {
-            executor = Executors.newFixedThreadPool(maxMiners);
-            ArrayList<Miner> miners = IntStream.range(0, maxMiners)
-                    .mapToObj(i -> new Miner(blockchain, "miner" + Integer.toString(i+1)))
+        while (blockchain.size() < Config.BLOCKCHAIN_SIZE) {
+            ExecutorService executor = Executors.newFixedThreadPool(maxMiners);
+            List<Miner> miners = IntStream.range(0, maxMiners)
+                    .mapToObj(i -> new Miner(blockchain, "miner" + (i + 1), sharedRandom))
                     .collect(Collectors.toCollection(ArrayList::new));
             Block newBlock = null;
             try {

@@ -1,10 +1,13 @@
-package blockchain.domain;
+package blockchain.core;
+
+import blockchain.config.Config;
+import blockchain.security.SHA256Hash;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
-public class Blockchain {
-    private final ArrayList<Block> blockchain;
+public class Blockchain extends LinkedList<Block> {
     private int N;
     private final int tTarget_sec;
     private final int maxMessagesPerBlock;
@@ -14,10 +17,9 @@ public class Blockchain {
     private int minMsgId;
 
     public Blockchain() {
-        blockchain = new ArrayList<>();
-        N = 3;
-        tTarget_sec = 2;
-        maxMessagesPerBlock = 10;
+        N = Config.INITIAL_LEADING_ZEROS;
+        tTarget_sec = Config.BLOCK_TARGET_CREATION_SECONDS;
+        maxMessagesPerBlock = Config.MAX_MESSAGES_PER_BLOCK;
         activeMessages = new ArrayList<>();
         nextMessages = new ArrayList<>();
         nextMsgId = 1;
@@ -26,7 +28,7 @@ public class Blockchain {
 
     public void addNewBlock(Block block) {
         if (isValidBlock(block)) {
-            blockchain.add(block);
+            this.add(block);
             activateNewData();
             System.out.println();
             System.out.println("Block:");
@@ -34,15 +36,18 @@ public class Blockchain {
             System.out.printf("Block was generating for %d seconds%n", block.getTimeToMine() / 1000);
             adjustN(block.getTimeToMine());
         }
+        else {
+            System.out.println("Invalid block will not be added!");
+        }
     }
 
     private boolean isValidBlock(Block block) {
-        if (!block.getPreviousHash().equals(blockchain.isEmpty() ?
-                "0" : blockchain.get(blockchain.size() - 1).getHash()))
+        if (!block.getPreviousHash().equals(this.isEmpty() ?
+                "0" : this.getLast().getHash()))
             return false;
         // check that every message has an identifier greater than the maximum identifier of the previous block
-        if (!blockchain.isEmpty()) {
-            int maxIdPrevBlock = blockchain.get(blockchain.size()-1).getData().stream()
+        if (!this.isEmpty()) {
+            int maxIdPrevBlock = this.getLast().getData().stream()
                     .mapToInt(Message::getId)
                     .max()
                     .orElse(0);
@@ -50,14 +55,10 @@ public class Blockchain {
                 return false;
         }
         if (block.getData().stream().allMatch(Message::verifySignature)) {
-            return block.applySha256().equals(block.getHash());
+            return SHA256Hash.applySha256(block.toHashInputExclMagic()+block.getMagic()).equals(block.getHash());
 
         }
         return false;
-    }
-
-    public ArrayList<Block> getBlockchain() {
-        return new ArrayList<Block>(blockchain);
     }
 
     public int getN() {
@@ -72,10 +73,6 @@ public class Blockchain {
             N++;
             System.out.println(" N was increased to " + N);
         } else System.out.println("N stays the same");
-    }
-
-    public int getSize() {
-        return blockchain.size();
     }
 
     public void addMsg(Message msg) {
@@ -107,7 +104,7 @@ public class Blockchain {
 
     public int getBalance(String node, boolean includeMsgQueues) {
         int balance = 100;
-        for (Block block : blockchain) {
+        for (Block block : this) {
             if (block.getMinerId().equals(node)){
                 balance += block.getAward();
             }

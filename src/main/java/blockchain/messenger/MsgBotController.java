@@ -1,6 +1,7 @@
 package blockchain.messenger;
 
-import blockchain.domain.Blockchain;
+import blockchain.config.Config;
+import blockchain.core.Blockchain;
 
 import java.util.HashSet;
 import java.util.List;
@@ -9,18 +10,18 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-public class MsgBotExecutor {
+public class MsgBotController {
     private ExecutorService executor;
-    private final List<String> botNames = List.of("Bob", "Alice", "ShoesShop", "FastFood");
+    private final List<String> botNames = Config.MESSAGE_BOTS;
     private Set<MsgBot> msgBotSet;
     private final Blockchain blockchain;
 
-    public MsgBotExecutor(Blockchain blockchain) {
+    public MsgBotController(Blockchain blockchain) {
         this.blockchain = blockchain;
     }
 
     public void activate () {
-        executor = Executors.newFixedThreadPool(3);
+        executor = Executors.newFixedThreadPool(botNames.size());
         msgBotSet = new HashSet<>();
         botNames.forEach(name -> msgBotSet.add(new MsgBot(blockchain, name)));
         msgBotSet.forEach(executor::submit);
