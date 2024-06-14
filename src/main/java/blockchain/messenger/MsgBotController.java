@@ -30,9 +30,11 @@ public class MsgBotController {
     public void stop() {
         executor.shutdownNow();
         try {
-            executor.awaitTermination(1, TimeUnit.SECONDS);
+            if (!executor.awaitTermination(1, TimeUnit.SECONDS)) {
+                System.err.println("MsgBot-Executor did not terminate within the specified timeout.");
+            }
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            Thread.currentThread().interrupt();
         }
     }
 }
