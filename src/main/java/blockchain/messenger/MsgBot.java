@@ -16,14 +16,14 @@ public class MsgBot extends Trader implements Runnable {
 
     @Override
     public void run() {
-        while (!Thread.interrupted()) {
-            try {
+        try {
+            while (!Thread.interrupted()) {
                 donateVCs();
                 Thread.sleep(ThreadLocalRandom.current().nextInt(
                         maxMsgInterval_ms - minMsgInterval_ms) + minMsgInterval_ms);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
             }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         }
     }
 }
