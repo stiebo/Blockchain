@@ -1,4 +1,4 @@
-# File Type Analyzer - Command-line Tool demonstrating Sub-string searching
+# Blockchain - Demo project
 
 ## About
 
